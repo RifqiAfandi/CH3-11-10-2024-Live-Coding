@@ -17,7 +17,6 @@ module.exports = (sequelize, DataTypes) => {
             lastName: DataTypes.STRING,
             age: DataTypes.INTEGER,
             phoneNumber: DataTypes.STRING,
-            // images: DataTypes.ARRAY(DataTypes.TEXT),
             photoProfile: DataTypes.TEXT
         },
         {

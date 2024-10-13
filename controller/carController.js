@@ -1,4 +1,5 @@
 const { Car } = require("../models");
+const imagekit = require("../lib/imagekit");
 
 async function getAllCars(req, res) {
     try {
@@ -124,12 +125,34 @@ async function updateCar(req, res) {
 
 async function createCar(req, res) {
     const { plate, model, type, year } = req.body;
+    const files = req.files;
 
+    const uploadedImages = [];
+    
+    for (let file of files) {
+        const split = file.originalname.split(".");
+        const ext = split[split.length - 1];
+        const fileName = split[0];
+
+        const uploadedImage = await imagekit.upload({
+            file: file.buffer,
+            fileName: `Car-${fileName}-${Date.now()}.${ext}`
+        });
+
+        uploadedImages.push(uploadedImage.url);
+    }
     try {
-        const newCar = await Car.create({ plate, model, type, year });
+        const newCar = await Car.create({
+            plate,
+            model,
+            type,
+            year,
+            carImages: uploadedImages
+        });
+
         res.status(200).json({
             status: "Success",
-            message: "Ping successfully",
+            message: "Car successfully added",
             isSuccess: true,
             data: { newCar },
         });
